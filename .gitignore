@@ -3,8 +3,11 @@
 ### Example user template
 
 # IntelliJ project files
+node
 .idea
 *.iml
 out
 gen
 .DS_Store
+package-lock.json
+/node_modules
