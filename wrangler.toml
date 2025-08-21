@@ -24,5 +24,5 @@ binding = "ASSETS"
 
 
 [[routes]]
-pattern = "poohErrors.divort.io"
+pattern = "errors.tools.divort.io"
 custom_domain = true
