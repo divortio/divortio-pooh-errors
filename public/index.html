@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<!--
+    USER EDITABLE SETTING:
+    To change the default error page that loads, scroll down to the <script> tag
+    at the bottom and modify the USER_DEFAULT_ERROR_CODE variable.
+-->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Rather Puzzling Corner</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=IM+Fell+English&family=Kristi&display=swap');
+
+        :root {
+            --ink-brown: #3f352f;
+            --paper-bg: #fdfaf5;
+            --page-bg: #faf6f0;
+            --border-color: #e9e2d9;
+            --button-bg: #e9e2d9;
+            --button-hover-bg: #dcd3c8;
+            --text-shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'IM Fell English', 'Garamond', serif;
+            color: var(--ink-brown);
+            margin: 0;
+            padding: 0;
+            background: var(--paper-bg);
+            overflow-x: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Align to top for scrolling */
+            min-height: 100vh;
+        }
+
+        .storybook-page {
+            position: relative; /* Needed for positioning the dropdown */
+            width: 100%;
+            max-width: 650px;
+            min-height: 100vh;
+            padding: 3rem;
+            margin: 2rem 1rem;
+            box-sizing: border-box;
+            background: var(--page-bg);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .book-header {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid var(--ink-brown);
+        }
+
+        .book-title-container {
+            text-align: left;
+        }
+
+        .book-title {
+            font-family: 'IM Fell English', serif;
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        .book-author {
+            font-family: 'IM Fell English', serif;
+            font-style: italic;
+            font-size: 1.1rem;
+            margin-top: 0.25rem;
+        }
+
+        .chapter-selector {
+            font-size: 0.9rem;
+            margin-top: 0.25rem;
+        }
+
+        #chapter-select {
+            font-family: 'IM Fell English', serif;
+            background: var(--paper-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            color: var(--ink-brown);
+        }
+
+        .chapter-heading {
+            text-align: center;
+            margin-bottom: 2rem;
+            width: 100%;
+        }
+
+        #chapter-number {
+            font-family: 'IM Fell English', serif;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--ink-brown);
+            margin: 0;
+        }
+
+        #chapter-title {
+            font-family: 'IM Fell English', serif;
+            font-size: 2.8rem;
+            font-weight: bold;
+            color: var(--ink-brown);
+            margin: 0.5rem 0 0 0;
+            line-height: 1.1;
+        }
+
+        #chapter-subtitle {
+            font-family: 'IM Fell English', serif;
+            font-style: italic;
+            font-size: 1rem;
+            color: #8a7a70;
+            margin-top: 1rem;
+        }
+
+        #chapter-description {
+            font-size: 0.9rem;
+            margin-top: 1rem;
+            text-align: left;
+            border-left: 2px solid var(--border-color);
+            padding-left: 1rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        #story-content-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* This centers the honeypot */
+            width: 100%;
+            position: relative; /* For side arrows */
+        }
+
+        .honeypot-emoji {
+            font-size: 4rem;
+            text-shadow: 2px 2px 4px var(--text-shadow);
+            line-height: 1;
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+            margin-top: 1rem;
+        }
+
+        .text-block {
+            text-align: left;
+            line-height: 1.8;
+            font-size: 1.2rem;
+            margin-top: 0.5rem;
+            width: 100%;
+        }
+
+        .text-block p {
+            margin: 0 0 1.5rem 0;
+            text-shadow: 1px 1px 2px var(--text-shadow);
+            min-height: 1em;
+        }
+
+        .text-block p:last-child {
+            margin-bottom: 0;
+            font-style: italic;
+        }
+
+        .text-block p:first-of-type::first-letter {
+            font-family: 'Kristi', cursive;
+            float: left;
+            font-size: 4.5em;
+            line-height: 0.7;
+            padding: 0.1em 0.1em 0 0;
+            font-weight: bold;
+        }
+
+        #chat-log {
+            margin-top: 2rem;
+        }
+
+        .user-response {
+            font-style: italic;
+            color: #5c504a;
+            text-align: right;
+            padding-right: 1rem;
+            border-right: 2px solid var(--ink-brown);
+        }
+
+        .pooh-thinking {
+            font-style: italic;
+            color: #8a7a70;
+            margin-top: 1.5rem;
+        }
+
+        .narrator {
+            font-weight: bold;
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .narrator-prompt {
+            font-style: italic;
+            text-align: center;
+            margin-top: 2.5rem;
+            color: #8a7a70;
+        }
+
+        #response-options {
+            margin-top: 1rem;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            min-height: 50px;
+        }
+
+        .option-button {
+            border: 1px solid var(--ink-brown);
+            background: var(--button-bg);
+            color: var(--ink-brown);
+            font-family: 'IM Fell English', serif;
+            font-size: 1.1rem;
+            padding: 12px 18px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            flex-basis: 45%;
+            text-align: center;
+        }
+
+        .option-button:hover {
+            background: var(--button-hover-bg);
+        }
+
+        .page-navigation {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            border-top: 1px solid var(--border-color);
+            padding-top: 1.5rem;
+        }
+
+        .top-nav {
+            margin-top: 0;
+            margin-bottom: 2rem;
+            border-top: none;
+            border-bottom: 1px solid var(--border-color);
+            padding-top: 0;
+            padding-bottom: 1.5rem;
+        }
+
+        .nav-button {
+            border: none;
+            background: none;
+            font-family: 'IM Fell English', serif;
+            font-size: 1.1rem;
+            color: var(--ink-brown);
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+
+        .nav-button:hover {
+            opacity: 1;
+        }
+
+        .side-nav-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 3rem;
+            opacity: 0.3;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            -webkit-user-select: none; /* Safari */
+            -ms-user-select: none; /* IE 10+ */
+            user-select: none;
+        }
+
+        .side-nav-arrow:hover {
+            opacity: 0.8;
+        }
+
+        #side-prev {
+            left: -10px;
+        }
+
+        #side-next {
+            right: -10px;
+        }
+
+
+        .bot-trap {
+            position: absolute;
+            left: -9999px;
+            top: -9999px;
+            opacity: 0;
+        }
+
+        @media (max-width: 750px) {
+            .side-nav-arrow {
+                display: none;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .storybook-page {
+                margin: 0;
+                padding: 1.5rem;
+                border: none;
+                box-shadow: none;
+            }
+
+            .book-header {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .chapter-selector {
+                position: static;
+                margin-top: 1rem;
+            }
+
+            .text-block {
+                font-size: 1.1rem;
+            }
+
+            .honeypot-emoji {
+                font-size: 3rem;
+            }
+
+            .book-title {
+                font-size: 3.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="storybook-page">
+    <div class="book-header">
+        <div class="book-title-container">
+            <h1 class="book-title">Pooh Errors</h1>
+            <p class="book-author">by Trey Bon III</p>
+        </div>
+        <div class="chapter-selector">
+            <label for="chapter-select">Chapter:</label>
+            <select id="chapter-select"></select>
+        </div>
+    </div>
+
+    <div class="chapter-heading">
+        <h1 id="chapter-number"></h1>
+        <h2 id="chapter-title"></h2>
+        <p id="chapter-subtitle"></p>
+        <p id="chapter-description"></p>
+        <div class="page-navigation top-nav">
+            <button id="top-prev-chapter" class="nav-button">← Previous Chapter</button>
+            <button id="top-next-chapter" class="nav-button">Next Chapter →</button>
+        </div>
+    </div>
+
+    <div id="story-content-container"></div>
+
+    <div class="page-navigation">
+        <button id="bottom-prev-chapter" class="nav-button">← Previous Chapter</button>
+        <button id="bottom-next-chapter" class="nav-button">Next Chapter →</button>
+    </div>
+</div>
+
+<div class="bot-trap" aria-hidden="true"></div>
+
+<script type="module" src="js/main.js"></script>
+
+</body>
+</html>
